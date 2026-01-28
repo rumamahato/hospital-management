@@ -1,0 +1,102 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+<marquee style="font-family:'Monotype Corsiva'; font-size:25px;color:Yellow;background-color:grey;font-weight:bold;">
+    Welcome to View Patients
+</marquee>
+
+<div class="text-end mb-3">
+    <a href="{% url 'recycle_bin_patient' %}" class="btn btn-danger btn-sm">
+        Recycle Bin
+    </a>
+</div>
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover text-center align-middle">
+<thead class="table-dark">
+<tr>
+    <th>SN</th>
+    <th>Name</th>
+    <th>DOB</th>
+    <th>Gender</th>
+    <th>Phone</th>
+    <th>Address</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for p in patients %}
+
+<!-- NORMAL ROW -->
+<tr id="row-{{ p.id }}">
+    <td>{{ p.id }}</td>
+    <td>{{ p.name }}</td>
+    <td>{{ p.DOB|date:'Y-m-d' }}</td>
+    <td>{{ p.gender }}</td>
+    <td>{{ p.phone }}</td>
+    <td>{{ p.address }}</td>
+    <td>
+        <button class="btn btn-primary btn-sm"
+                onclick="showEdit({{ p.id }})">Edit</button>
+
+        <a href="{% url 'recycle_patient' p.id %}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Move to Recycle Bin?')">
+           Delete
+        </a>
+    </td>
+</tr>
+
+<!-- EDIT ROW -->
+<tr id="edit-{{ p.id }}" style="display:none;">
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="patient_id" value="{{ p.id }}">
+
+<td>{{ p.id }}</td>
+<td><input name="name" value="{{ p.name }}" class="form-control"></td>
+<td><input type="date" name="DOB" value="{{ p.DOB|date:'Y-m-d' }}" class="form-control"></td>
+
+<td>
+<select name="gender" class="form-control">
+<option value="Male" {% if p.gender == "Male" %}selected{% endif %}>Male</option>
+<option value="Female" {% if p.gender == "Female" %}selected{% endif %}>Female</option>
+<option value="Other" {% if p.gender == "Other" %}selected{% endif %}>Other</option>
+</select>
+</td>
+
+<td><input name="phone" value="{{ p.phone }}" class="form-control"></td>
+<td><input name="address" value="{{ p.address }}" class="form-control"></td>
+
+<td>
+<button class="btn btn-success btn-sm">Save</button>
+<button type="button" class="btn btn-secondary btn-sm"
+        onclick="hideEdit({{ p.id }})">Cancel</button>
+</td>
+</form>
+</tr>
+
+{% empty %}
+<tr><td colspan="7">No Patients Found</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+
+<script>
+function showEdit(id){
+    document.getElementById("row-"+id).style.display="none";
+    document.getElementById("edit-"+id).style.display="";
+}
+function hideEdit(id){
+    document.getElementById("edit-"+id).style.display="none";
+    document.getElementById("row-"+id).style.display="";
+}
+</script>
+
+{% endblock %}

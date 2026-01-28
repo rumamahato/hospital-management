@@ -1,0 +1,32 @@
+{% extends 'navigation.html' %}
+{% block content %}
+
+{% if error == "yes" %}
+<script>
+    alert("Invalid username or password");
+</script>
+{% endif %}
+
+<div class="container mt-4">    
+    <marquee style="font-family: 'Monotype Corsiva'; font-size: 25px; width:150%; color: lightpink; background-color: grey; font-weight: bold; margin-top:1%;" 
+        scrollamount="10" behavior="scroll"
+>       Welcome to Login
+    </marquee>
+
+    <div class="card p-4 shadow" style="max-width:600px;">
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" required>
+
+            <label>Password</label>
+            <input type="password" name="pwd" class="form-control" required>
+
+            <br>
+            <input type="submit" value="Login" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+
+{% endblock %}

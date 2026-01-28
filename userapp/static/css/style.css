@@ -1,0 +1,25 @@
+.nav-link{
+color:white !important;    
+}
+
+
+.mydivstyle{
+    transition: all 0.3s ease; /* smooth hover animation */
+}
+
+.nav-link:hover{
+color:yellow !important;  
+background-color:rgb(218, 138, 178);  
+border-radius:10px;
+}
+
+.navbar-brand:hover{
+color:rgb(255, 115, 0) !important;   
+font-weight:bold
+}
+
+
+.mydivstyle:hover{
+box-shadow:0 0 20px 0 rgba(0,0,0,0.3);
+transform:translateY(-20px)
+}

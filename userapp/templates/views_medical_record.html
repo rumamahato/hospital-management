@@ -1,0 +1,163 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:yellow; background-color:grey; font-weight:bold;" scrollamount="10">
+        Welcome to View Medical Records 🩺
+    </marquee>
+
+    {% if records %}
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered table-striped align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>SN</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Diagnosis</th>
+                    <th>Notes</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for record in records %}
+            <tr>
+            <form method="POST" action="{% url 'edit_medical_record' record.id %}">
+                {% csrf_token %}
+
+                <td>{{ forloop.counter }}</td>
+
+                <!-- Patient -->
+                <td>
+                    <span id="patient-text-{{ record.id }}">
+                        {{ record.patient.name }}
+                    </span>
+
+                    <select name="patient"
+                            id="patient-input-{{ record.id }}"
+                            class="form-control form-control-sm d-none">
+                        {% for p in patients %}
+                        <option value="{{ p.id }}"
+                            {% if p.id == record.patient.id %}selected{% endif %}>
+                            {{ p.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <!-- Doctor -->
+                <td>
+                    <span id="doctor-text-{{ record.id }}">
+                        Dr. {{ record.doctor.name }}
+                    </span>
+
+                    <select name="doctor"
+                            id="doctor-input-{{ record.id }}"
+                            class="form-control form-control-sm d-none">
+                        {% for d in doctors %}
+                        <option value="{{ d.id }}"
+                            {% if d.id == record.doctor.id %}selected{% endif %}>
+                            Dr. {{ d.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <!-- Diagnosis -->
+                <td>
+                    <span id="diagnosis-text-{{ record.id }}">
+                        {{ record.diagnosis|default:"—" }}
+                    </span>
+
+                    <input type="text"
+                           name="diagnosis"
+                           value="{{ record.diagnosis }}"
+                           id="diagnosis-input-{{ record.id }}"
+                           class="form-control form-control-sm d-none">
+                </td>
+
+                <!-- Notes -->
+                <td>
+                    <span id="notes-text-{{ record.id }}">
+                        {{ record.notes|default:"—" }}
+                    </span>
+
+                    <input type="text"
+                           name="notes"
+                           value="{{ record.notes }}"
+                           id="notes-input-{{ record.id }}"
+                           class="form-control form-control-sm d-none">
+                </td>
+
+                <!-- Date -->
+                <td>{{ record.created_at|date:"Y-m-d H:i" }}</td>
+
+                <!-- Actions -->
+                <td>
+                    <button type="button"
+                            class="btn btn-sm btn-primary mb-1"
+                            id="edit-btn-{{ record.id }}"
+                            onclick="enableEdit({{ record.id }})">
+                        Edit
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-sm btn-success mb-1 d-none"
+                            id="save-btn-{{ record.id }}">
+                        Save
+                    </button>
+
+                    <a href="{% url 'delete_medical_record' record.id %}"
+                       class="btn btn-sm btn-danger mb-1"
+                       onclick="return confirm('Are you sure?');">
+                        Delete
+                    </a>
+
+                    <!-- ✅ VIEW PRESCRIPTION BUTTON -->
+                    <a href="{% url 'view_prescription' record.id %}" 
+                        class="btn btn-sm btn-info mb-1">
+                        View Prescription
+                     </a>
+                </td>
+
+            </form>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-warning text-center mt-4">
+            No medical records found.
+        </div>
+    {% endif %}
+</div>
+
+<!-- JS -->
+<script>
+function enableEdit(id) {
+
+    // hide text
+    document.getElementById(`patient-text-${id}`).classList.add('d-none');
+    document.getElementById(`doctor-text-${id}`).classList.add('d-none');
+    document.getElementById(`diagnosis-text-${id}`).classList.add('d-none');
+    document.getElementById(`notes-text-${id}`).classList.add('d-none');
+
+    // show inputs
+    document.getElementById(`patient-input-${id}`).classList.remove('d-none');
+    document.getElementById(`doctor-input-${id}`).classList.remove('d-none');
+    document.getElementById(`diagnosis-input-${id}`).classList.remove('d-none');
+    document.getElementById(`notes-input-${id}`).classList.remove('d-none');
+
+    // buttons toggle
+    document.getElementById(`edit-btn-${id}`).classList.add('d-none');
+    document.getElementById(`save-btn-${id}`).classList.remove('d-none');
+}
+</script>
+
+{% endblock %}

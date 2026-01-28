@@ -1,0 +1,26 @@
+{% extends 'navigation.html' %}
+
+
+{% load static %}
+{% block content %}
+<div class="container" style = "margin-top:50px">
+<h2 class="text-center">
+    <marquee style="font-family: 'Monotype Corsiva'; font-size: 25px; width:150%; color: lightpink; background-color: grey; font-weight: bold; margin-top:1%;" 
+        scrollamount="10" behavior="scroll"
+>       Welcome to About Us
+    </marquee>
+    <br><br><br><br>
+    <div class="row">
+        <div class="col-sm-4 text-center">
+            <img src="{% static 'images/ABOUT.jpg' %}" width="300" height="200" class="img-reponsive">
+        </div>
+        <div class="col-sm-8 font-weight-bold mt-1">
+            <b style="color: rgb(11, 228, 243);">Hello Friends....</b>
+            <br> This is a simple Hospital Management Project developed by <br><br><b style="color: rgb(243, 11, 154);">Ruma Mahato.</b><br>
+            Using <b style="color: rgb(243, 105, 41);">HTML, CSS, javascript, Bootstrap, Python, Django and sqlite.</b>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+

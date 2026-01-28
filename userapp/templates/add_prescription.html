@@ -1,0 +1,98 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:lightpink; background-color:grey; font-weight:bold; margin-bottom:20px;">
+        Welcome to 🩺 Add Prescription
+    </marquee>
+
+    <div class="row mt-4">
+
+        <!-- Image -->
+        <div class="col-md-4 text-center">
+            <img src="{% static 'images/PRESCRIPTION.jpg' %}" class="img-fluid rounded shadow" style="max-height:250px;">
+        </div>
+
+        <!-- Form -->
+        <div class="col-md-8">
+            <div class="card shadow-sm p-3" style="max-width:650px;">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Patient name -->
+                    <div class="mb-2">
+                        <label class="fw-bold small">Patient Name</label>
+                        <select name="medical_record" class="form-control form-control-sm" required>
+                            <option value="">-- Select Medical Record --</option>
+                            {% for record in records %}
+                                <option value="{{ record.id }}">
+                                    {{ record.patient.name|default:"N/A" }} 
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Doctor name -->
+                    <div class="mb-2">
+                        <label class="fw-bold small">Doctor Name</label>
+                        <select name="medical_record" class="form-control form-control-sm" required>
+                            <option value="">-- Select Medical Record --</option>
+                            {% for record in records %}
+                                <option value="{{ record.id }}">
+                                     Dr. {{ record.doctor.name|default:"N/A" }} 
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="mb-2">
+                        <label class="fw-bold small">Date</label>
+                        <select name="medical_record" class="form-control form-control-sm" required>
+                            <option value="">-- Select Medical Record --</option>
+                            {% for record in records %}
+                                <option value="{{ record.id }}">
+                                    {{ record.created_at|date:"Y-m-d" }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Medicine Name -->
+                    <div class="mb-2">
+                        <label class="fw-bold small">Medicine Name</label>
+                        <input type="text" name="medicine_name" class="form-control form-control-sm" placeholder="Paracetamol" required>
+                    </div>
+
+                    <!-- Dosage -->
+                    <div class="mb-2">
+                        <label class="fw-bold small">Dosage</label>
+                        <input type="text" name="dosage" class="form-control form-control-sm" placeholder="500mg / 1 tablet">
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="mb-2">
+                        <label class="fw-bold small">Duration</label>
+                        <input type="text" name="duration" class="form-control form-control-sm" placeholder="5 days">
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="mb-3">
+                        <label class="fw-bold small">Instructions</label>
+                        <textarea name="instructions" rows="2" class="form-control form-control-sm" placeholder="After food, twice a day"></textarea>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-success btn-sm px-4">💾 Save</button>
+                        <a href="{% url 'view_medical_record' %}" class="btn btn-secondary btn-sm px-4 ms-2">⬅ Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

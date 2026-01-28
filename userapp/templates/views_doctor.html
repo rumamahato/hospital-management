@@ -1,0 +1,86 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:Yellow; background-color:grey; font-weight:bold;">
+        Welcome to View Doctors
+    </marquee>
+
+    <div class="text-end mb-3">
+        <a href="{% url 'add_doctor' %}" class="btn btn-success">Add New Doctor</a>
+        <a href="{% url 'recycle_bin_doctor' %}" class="btn btn-danger">Recycle Bin</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>S.N</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Experience</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Fee</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in doc %}
+                <!-- DISPLAY ROW -->
+                <tr id="row-{{ d.id }}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.specialization }}</td>
+                    <td>{{ d.experience }}</td>
+                    <td>{{ d.available_from|time:"H:i" }}</td>
+                    <td>{{ d.available_to|time:"H:i" }}</td>
+                    <td>Rs. {{ d.consultation_fee }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="showEdit({{ d.id }})">Edit</button>
+                        <a href="{% url 'recycle_doctor' d.id %}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Move this doctor to Recycle Bin')">Delete</a>
+                    </td>
+                </tr>
+
+                <!-- EDIT ROW -->
+                <tr id="edit-{{ d.id }}" style="display:none;">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="doctor_id" value="{{ d.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td><input name="name" value="{{ d.name }}" class="form-control"></td>
+                        <td><input name="specialization" value="{{ d.specialization }}" class="form-control"></td>
+                        <td><input name="experience" value="{{ d.experience }}" class="form-control"></td>
+                        <td><input type="time" name="available_from" value="{{ d.available_from|time:'H:i' }}" class="form-control"></td>
+                        <td><input type="time" name="available_to" value="{{ d.available_to|time:'H:i' }}" class="form-control"></td>
+                        <td><input name="consultation_fee" value="{{ d.consultation_fee }}" class="form-control"></td>
+                        <td>
+                            <button type="submit" class="btn btn-success btn-sm">Save</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="hideEdit({{ d.id }})">Cancel</button>
+                        </td>
+                    </form>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No doctors found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showEdit(id){
+    document.getElementById("row-" + id).style.display = "none";
+    document.getElementById("edit-" + id).style.display = "";
+}
+function hideEdit(id){
+    document.getElementById("edit-" + id).style.display = "none";
+    document.getElementById("row-" + id).style.display = "";
+}
+</script>
+{% endblock %}

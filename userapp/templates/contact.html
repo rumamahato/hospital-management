@@ -1,0 +1,43 @@
+{% extends 'navigation.html' %}
+
+{% load static %}
+{% block content %}
+
+<style>
+.mydivstyle:hover{
+box-shadow:0 0 20px 0 rgba(0,0,0,0.3);
+transform:translateY(-20px)
+}
+</style>
+
+<div class="container" style = "margin-top:50px">
+    <marquee style="font-family: 'Monotype Corsiva'; font-size: 25px; width:150%; color: lightpink; background-color: grey; font-weight: bold; margin-top:1%;" 
+        scrollamount="10" behavior="scroll"
+>       Welcome to Contact Us
+    </marquee>
+<br><br>
+<div class="row mt-5 text-center">
+    <div class="col-lg-3 col-sm-6 mydivstyle">
+        <h4><i class="fas fa-phone-square"></i> contact</h4>
+        <p class="mt-3 font-weight-bold"><a class="text-danger" href="tel: 977 9807868627">977 9807868627</a></p>
+    </div>
+
+    <div class="col-lg-3 col-sm-6 mydivstyle">
+        <h4><i class="fas fa-envelope"></i> Send Email</h4>
+        <p class="mt-3 font-weight-bold"><a class="text-danger" href="mail: rumamahato918@gmail.com">rumamahato918@gmail.com</a></p>
+    </div>
+    <div class="col-lg-3 col-sm-6 mydivstyle">
+        <h4><i class="fa-jelly-fill fa-regular fa-address-card"></i> Office Address</h4>
+        <p class="mt-3 font-weight-bold"><a class="text-danger" href="address:Bhaisepati-Lalitpur">Bhaisepati-Lalitpur</a></p>
+    </div>
+
+    <div class="col-lg-3 col-sm-6 mydivstyle">
+        <h4><i class="fa-jelly-fill fa-regular fa-address-card"></i>Office Hours</h4>
+        <p class="mt-3 font-weight-bold text-danger"><a class="text-danger" href="address:Bhaisepati-Lalitpur">10:00 AM to 6:00 PM</a></p>
+    </div>
+    
+</div>
+</div>
+{% endblock content %}
+
+

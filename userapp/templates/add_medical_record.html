@@ -1,0 +1,93 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <marquee style="font-family: 'Monotype Corsiva';font-size: 25px;width:150%;: lightpink;background-color: grey;font-weight: bold;margin-top:1%;"scrollamount="10">
+        Welcome to Add Medical Record
+    </marquee>
+
+    <div class="row mt-4 align-items-center">
+
+        <!-- LEFT IMAGE -->
+        <div class="col-md-4 text-center">
+            <img src="{% static 'images/MEDICAL1.webp' %}"
+            class="img-fluid rounded shadow"alt="Medical Record"style="max-height: 280px;">
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="col-md-8">
+            <div class="card p-4 shadow" style="max-width: 600px;">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Patient -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Patient</label>
+                        <select name="patient" class="form-control form-control-sm" required>
+                            <option value="">-- Select Patient --</option>
+                            {% for p in patients %}
+                                <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Doctor -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Doctor</label>
+                        <select name="doctor" class="form-control form-control-sm" required>
+                            <option value="">-- Select Doctor --</option>
+                            {% for d in doctors %}
+                                <option value="{{ d.id }}">{{ d.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Diagnosis -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Diagnosis</label>
+                        <textarea name="diagnosis"
+                                  class="form-control form-control-sm"
+                                  rows="3"
+                                  placeholder="Enter diagnosis"
+                                  required></textarea>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Notes</label>
+                        <textarea name="notes"
+                                  class="form-control form-control-sm"
+                                  rows="3"
+                                  placeholder="Additional notes (optional)"></textarea>
+                    </div>
+
+                    <div class="text-left">
+                        <button type="submit" class="btn btn-primary btn-sm px-4">
+                            💾 Save Record
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% if error == "no" %}
+<script>
+    alert("Medical Record Saved Successfully");
+    window.location.href = "{% url 'view_medical_record' %}";
+</script>
+{% endif %}
+
+{% if error == "yes" %}
+<script>
+    alert("Something went wrong. Please try again.");
+</script>
+{% endif %}
+
+{% endblock %}

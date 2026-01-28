@@ -1,0 +1,54 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:red; background-color:grey; font-weight:bold;">
+        Welcome to Recycle Bin - Doctors
+    </marquee>
+
+    <div class="text-end mb-3">
+        <a href="{% url 'view_doctor' %}" class="btn btn-primary btn-sm">Back to Doctors</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Experience</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Fee</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in doctors %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.specialization }}</td>
+                    <td>{{ d.experience }}</td>
+                    <td>{{ d.available_from|time:"H:i" }}</td>
+                    <td>{{ d.available_to|time:"H:i" }}</td>
+                    <td>Rs. {{ d.consultation_fee }}</td>
+                    <td>
+                        <a href="{% url 'restore_doctor' d.id %}" class="btn btn-success btn-sm"
+                           onclick="return confirm('Restore this doctor?')">Restore</a>
+                        <a href="{% url 'delete_doctor_permanent' d.id %}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Permanently delete this doctor?')">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No deleted doctors found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

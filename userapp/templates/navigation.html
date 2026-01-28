@@ -1,0 +1,291 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hospital Management System</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- DataTable CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.6/css/buttons.dataTables.css">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container">
+        <img src="{% static 'images/hospital.png' %}" width="30" height="30">
+        <a class="navbar-brand ml-2" href="{% url 'index' %}">
+            Hospital Management System
+        </a>
+
+        <ul class="navbar-nav ml-auto">
+
+            {% if request.user.is_authenticated %}
+                <!-- AFTER LOGIN -->
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+
+                <!-- Doctor -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                        Doctor
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'add_doctor' %}">Add Doctor</a>
+                        <a class="dropdown-item" href="{% url 'view_doctor' %}">View Doctor</a>
+                    </div>
+                </li>
+
+                <!-- Patient -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                        Patient
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'add_patient' %}">Add Patient</a>
+                        <a class="dropdown-item" href="{% url 'view_patient' %}">View Patient</a>
+                    </div>
+                </li>
+
+                <!-- Appointment -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                        Appointment
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'add_appointment' %}">Add Appointment</a>
+                        <a class="dropdown-item" href="{% url 'view_appointment' %}">View Appointment</a>
+                    </div>
+                </li>
+                
+                <!-- Medical Record -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                        Medical Record
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'add_medical_record' %}">Add Medical Record</a>
+                        <a class="dropdown-item" href="{% url 'view_medical_record' %}">View Medical Record</a>
+
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                        Prescription
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'add_prescription' %}">Add Prescription</a>
+                        <a class="dropdown-item" href="{% url 'view_medical_record' %}">View Prescription</a>
+
+                    </div>
+                </li>
+
+                <!-- Logout -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+
+            {% else %}
+                <!-- BEFORE LOGIN -->
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                </li>
+
+                <!-- Payment -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Payment</a>
+                </li>              
+
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+<!-- ================= NAVBAR END ================= -->
+
+
+
+
+<!-- ================= PAGE CONTENT ================= -->
+<div class="container mt-4">
+    {% block content %}
+    {% endblock content %}
+</div>
+<!-- ================= FOOTER START ================= -->
+<footer style="background:#1f2937; color:#ffffff; margin-top:50px;">
+
+    <style>
+        .mb-footer {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 40px 60px;
+            font-family: Arial, sans-serif;
+        }
+
+        .mb-footer-section {
+            width: 23%;
+            min-width: 220px;
+            margin-bottom: 20px;
+        }
+
+        .mb-footer-section h4 {
+            color: #38bdf8;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .mb-footer-section p,
+        .mb-footer-section li {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .mb-footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mb-footer-section ul li a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .mb-footer-section ul li a:hover {
+            color: #f83848;
+        }
+
+        .mb-footer-bottom {
+            text-align: center;
+            background: #11c0f5;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .mb-social a {
+            margin-right: 10px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .mb-social a:hover {
+            color: #f11224;
+        }
+
+        @media(max-width:768px){
+            .mb-footer{
+                padding: 30px;
+            }
+            .mb-footer-section{
+                width: 100%;
+            }
+        }
+    </style>
+
+    <div class="mb-footer">
+
+        <!-- About -->
+        <div class="mb-footer-section">
+            
+            <h4><img src="{% static 'images/hospital.png' %}" width="30" height="30"> MediBridge</h4>
+            <p>
+                MediBridge is a comprehensive healthcare management system
+                designed to connect patients, doctors, and hospitals digitally.
+                It simplifies appointments, prescriptions, and medical records.
+            </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="mb-footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about/">About Us</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/login/">Admin Login</a></li>
+            </ul>
+        </div>
+
+        <!-- Services -->
+        <div class="mb-footer-section">
+            <h4>Our Services</h4>
+            <ul>
+                <li>Appointment Booking</li>
+                <li>Doctor Management</li>
+                <li>Digital Prescriptions</li>
+                <li>Medical Records</li>
+                <li>Online Consultation</li>
+            </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="mb-footer-section">
+            <h4>Contact Info</h4>
+            <p>Email: rumamahato918@gmail.com</p>
+            <p>Phone: +977-9807868627</p>
+            <p>Location: Bhaisepati-25, Lalitpur</p>
+        </div>
+    </div>
+</footer>
+<!-- ================= FOOTER END ================= -->
+
+
+<!-- ================= JS FILES ================= -->
+
+<!-- jQuery (FULL VERSION – IMPORTANT) -->
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- DataTable JS -->
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.6/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<!-- DataTable Init -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (document.querySelector('#example')) {
+        new DataTable('#example', {
+            layout: {
+                topStart: {
+                    buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5']
+                }
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

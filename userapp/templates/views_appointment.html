@@ -1,0 +1,125 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:Yellow; background-color:grey; font-weight:bold;">
+        Welcome to View Appointments
+    </marquee>
+
+    <div class="mb-3 text-end">
+        <a href="{% url 'recycle_appointment_view' %}" class="btn btn-secondary btn-sm">
+            🗑 Deleted Appointments
+        </a>
+    </div>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>SN</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for a in appointments %}
+                <tr id="row-{{ a.id }}">
+                    <td>{{ a.id }}</td>
+                    <td>{{ a.patient_name }}</td>
+                    <td>{{ a.doctor_name }}</td>
+                    <td>{{ a.appointment_date }}</td>
+                    <td>{{ a.appointment_time }}</td>
+                    <td>{{ a.status }}</td>
+                    <td>
+                        <!-- EDIT -->
+                        <button class="btn btn-primary btn-sm"
+                                onclick="showEdit({{ a.id }})">
+                            Edit
+                        </button>
+
+                        <!-- DELETE (SOFT DELETE → RECYCLE BIN) -->
+                        <a href="{% url 'recycle_appointment' a.id %}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this appointment?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- EDIT FORM ROW -->
+                <tr id="edit-{{ a.id }}" style="display:none;">
+                    <form method="POST" action="{% url 'view_appointment' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="appointment_id" value="{{ a.id }}">
+
+                        <td>{{ a.id }}</td>
+                        <td>
+                            <input type="text" name="patient_name"
+                                   value="{{ a.patient_name }}"
+                                   class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="doctor_name"
+                                   value="{{ a.doctor_name }}"
+                                   class="form-control">
+                        </td>
+                        <td>
+                            <input type="date" name="appointment_date"
+                                   value="{{ a.appointment_date|date:'Y-m-d' }}"
+                                   class="form-control">
+                        </td>
+                        <td>
+                            <input type="time" name="appointment_time"
+                                   value="{{ a.appointment_time|time:'H:i' }}"
+                                   class="form-control">
+                        </td>
+                        <td>
+                            <select name="status" class="form-control">
+                                <option value="Pending" {% if a.status == "Pending" %}selected{% endif %}>Pending</option>
+                                <option value="Confirmed" {% if a.status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+                                <option value="Completed" {% if a.status == "Completed" %}selected{% endif %}>Completed</option>
+                                <option value="Cancelled" {% if a.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Save
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                    onclick="hideEdit({{ a.id }})">
+                                Cancel
+                            </button>
+                        </td>
+                    </form>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="7">No Appointments Found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showEdit(id) {
+    document.getElementById("row-" + id).style.display = "none";
+    document.getElementById("edit-" + id).style.display = "";
+}
+
+function hideEdit(id) {
+    document.getElementById("edit-" + id).style.display = "none";
+    document.getElementById("row-" + id).style.display = "";
+}
+</script>
+
+{% endblock %}

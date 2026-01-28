@@ -1,0 +1,133 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- HEADER -->
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:yellow; background-color:grey; font-weight:bold;" scrollamount="10">
+        🩺 Prescription & Payment Details
+    </marquee>
+
+    <!-- ================= PATIENT INFO ================= -->
+    <div class="card mt-4 shadow">
+        <div class="card-body">
+            <h5 class="text-primary mb-3">Patient Information</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Patient Name:</strong> {{ medical_record.patient.name }}</p>
+                    <p><strong>Gender:</strong> {{ medical_record.patient.gender }}</p>
+                    <p><strong>DOB:</strong> {{ medical_record.patient.DOB }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Doctor:</strong> Dr. {{ medical_record.doctor.name }}</p>
+                    <p><strong>Diagnosis:</strong> {{ medical_record.diagnosis }}</p>
+                    <p><strong>Date:</strong> {{ medical_record.created_at|date:"Y-m-d H:i" }}</p>
+                </div>
+            </div>
+
+            {% if medical_record.notes %}
+            <p class="mt-2"><strong>Notes:</strong> {{ medical_record.notes }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ================= PRESCRIPTION TABLE ================= -->
+    <div class="card mt-4 shadow">
+        <div class="card-body">
+            <h5 class="text-success mb-3">Prescribed Medicines</h5>
+
+            {% if prescriptions %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped text-center align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>SN</th>
+                            <th>Medicine Name</th>
+                            <th>Dosage</th>
+                            <th>Duration</th>
+                            <th>Instructions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in prescriptions %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ p.medicine_name }}</td>
+                            <td>{{ p.dosage }}</td>
+                            <td>{{ p.duration }}</td>
+                            <td>{{ p.instructions }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning text-center">
+                No medicines prescribed yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ================= PAYMENT SECTION ================= -->
+    <div class="card mt-4 shadow">
+        <div class="card-body">
+            <h5 class="text-danger mb-3">💳 Payment Section</h5>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!-- Amount -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Total Amount (Rs.)</label>
+                        <input type="number" name="amount" class="form-control" placeholder="Enter amount" required>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Payment Method</label>
+                        <select name="payment_method" class="form-control" required>
+                            <option value="">-- Select --</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Online">Online</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+
+                    <!-- Payment Status -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Payment Status</label>
+                        <select name="status" class="form-control" required>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-success px-4">
+                        ✅ Confirm Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= BUTTONS ================= -->
+    <div class="text-center mt-4">
+        <a href="{% url 'add_prescription' %}" class="btn btn-primary me-2">
+            Add More Medicine
+        </a>
+        <a href="{% url 'view_medical_record' %}" class="btn btn-secondary">
+            ⬅ Back
+        </a>
+    </div>
+
+</div>
+{% endblock %}

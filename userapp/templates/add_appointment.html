@@ -1,0 +1,144 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:lightpink;background-color:grey; font-weight:bold;"scrollamount="10">
+        Welcome to Add Appointment
+    </marquee>
+
+    <div class="row mt-4 align-items-center">
+
+        <!-- ========== LEFT SIDE IMAGE ========== -->
+        <div class="col-md-5 text-center">
+            <img src="{% static 'images/appointment.webp' %}"
+            class="img-fluid rounded shadow"alt="Appointment Image">
+        </div>
+
+        <!-- ========== RIGHT SIDE FORM ========== -->
+        <div class="col-md-7">
+            <div class="card shadow p-4">
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- ================= Patient ================= -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Patient</label>
+                        <select name="patient" id="patientSelect" class="form-control" required>
+                            <option value="">-- Select Patient --</option>
+                            {% for p in patients %}
+                                <option
+                                    value="{{ p.id }}"
+                                    data-phone="{{ p.phone }}"
+                                    data-gender="{{ p.gender }}"
+                                    data-dob="{{ p.DOB }}"
+                                    data-address="{{ p.address }}">
+                                    {{ p.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Auto Filled Patient Info -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Phone</label>
+                            <input type="text" id="phone" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Gender</label>
+                            <input type="text" id="gender" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>DOB</label>
+                            <input type="text" id="dob" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Address</label>
+                            <input type="text" id="address" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <!-- ================= Doctor ================= -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Doctor</label>
+                        <select name="doctor" class="form-control" required>
+                            <option value="">-- Select Doctor --</option>
+                            {% for d in doctors %}
+                                <option value="{{ d.id }}">
+                                    Dr. {{ d.name }} ({{ d.specialization }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- ================= Date & Time ================= -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Appointment Date</label>
+                            <input type="date" name="appointment_date" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Appointment Time</label>
+                            <input type="time" name="appointment_time" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- ================= Status ================= -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="form-control" required>
+                            {% for value, display in status_choices %}
+                                <option value="{{ value }}"
+                                    {% if value == 'Pending' %}selected{% endif %}>
+                                    {{ display }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- ================= Submit ================= -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            Save Appointment
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+document.getElementById("patientSelect").addEventListener("change", function () {
+    let opt = this.options[this.selectedIndex];
+    document.getElementById("phone").value = opt.dataset.phone || "";
+    document.getElementById("gender").value = opt.dataset.gender || "";
+    document.getElementById("dob").value = opt.dataset.dob || "";
+    document.getElementById("address").value = opt.dataset.address || "";
+});
+</script>
+
+{% if error == "no" %}
+<script>
+    alert("✅ Appointment Saved Successfully");
+    window.location.href = "{% url 'view_appointment' %}";
+</script>
+{% endif %}
+
+{% if error == "yes" %}
+<script>
+    alert("❌ Something went wrong. Please try again.");
+</script>
+{% endif %}
+
+{% endblock %}

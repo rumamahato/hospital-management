@@ -1,0 +1,88 @@
+{% extends 'navigation.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* Card Hover Effect */
+.mydivstyle{
+    transition: all 0.3s ease; /* smooth hover */
+}
+.mydivstyle:hover{
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    transform: translateY(-20px);
+}
+
+/* Rounded line under card */
+.rounded{
+    border-top: 5px solid lightblue;
+}
+
+/* Optional text styling */
+h2{
+    margin-bottom: 15px;
+}
+h4{
+    margin-top: 10px;
+}
+</style>
+
+<div class="container" style="margin-top:50px">
+
+    <!-- Marquee -->
+    <h2 class="text-center">
+        <marquee style="font-family:'Monotype Corsiva'; font-size:25px; width:150%; color:lightpink; background-color:grey; font-weight:bold;"
+            scrollamount="10">
+            Welcome to Index
+        </marquee>
+    </h2>
+
+    <br><br>
+
+    <!-- Dashboard Cards in ONE LINE -->
+    <div class="row justify-content-center">
+
+        <div class="col-sm-2 text-center mydivstyle">
+            <h2 style="color:blue">{{d}}</h2>
+            <a href="{% url 'view_doctor' %}">
+                <h4 style="color:red">Doctors</h4>
+                <hr class="rounded">
+            </a>
+        </div>
+
+        <div class="col-sm-2 text-center mydivstyle">
+            <h2 style="color:blue">{{p}}</h2>
+            <a href="{% url 'view_patient' %}">
+                <h4 style="color:red">Patients</h4>
+                <hr class="rounded">
+            </a>
+        </div>
+
+        <div class="col-sm-2 text-center mydivstyle">
+            <h2 style="color:blue">{{a}}</h2>
+            <a href="{% url 'view_appointment' %}">
+                <h4 style="color:red">Appointments</h4>
+                <hr class="rounded">
+            </a>
+        </div>
+
+        <div class="col-sm-2 text-center mydivstyle">
+            <h2 style="color:blue">{{m}}</h2>
+            <a href="{% url 'view_medical_record' %}">
+                <h4 style="color:red">Medical</h4>
+                <hr class="rounded">
+            </a>
+        </div>
+
+        <div class="col-sm-2 text-center mydivstyle">
+            <h2 style="color:blue">{{pr}}</h2>
+            <a href="{% url 'view_prescription' id=1 %}">
+                <h4 style="color:red">Prescription</h4>
+                <hr class="rounded">
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock content %}

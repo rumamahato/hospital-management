@@ -1,0 +1,53 @@
+{% extends 'navigation.html' %}
+{% block content %}
+
+<div class="container mt-5">
+
+<marquee style="font-family:'Monotype Corsiva'; font-size:25px;color:red;background-color:grey;font-weight:bold;">
+    Welcome to Recycle Bin - Patients
+</marquee>
+
+<div class="text-end mb-3">
+    <a href="{% url 'view_patient' %}" class="btn btn-primary btn-sm">
+        Back
+    </a>
+</div>
+
+<table class="table table-bordered text-center">
+<thead class="table-dark">
+<tr>
+    <th>SN</th>
+    <th>Name</th>
+    <th>Phone</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for p in patients %}
+<tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.name }}</td>
+    <td>{{ p.phone }}</td>
+    <td>
+        <a href="{% url 'restore_patient' p.id %}"
+           class="btn btn-success btn-sm"
+           onclick="return confirm('Restore patient?')">
+           Restore
+        </a>
+
+        <a href="{% url 'delete_patient_permanent' p.id %}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Permanent delete?')">
+           Delete
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr><td colspan="4">Recycle Bin Empty</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+{% endblock %}

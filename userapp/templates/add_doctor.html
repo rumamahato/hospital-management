@@ -1,0 +1,83 @@
+{% extends 'navigation.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:lightpink; background-color:grey; font-weight:bold;" scrollamount="10">
+        Welcome to Add Doctor 🩺
+    </marquee>
+
+    <div class="row mt-4 align-items-center">
+
+        <!-- LEFT IMAGE -->
+        <div class="col-md-5 text-center">
+            <img src="{% static 'images/doctor.jpg' %}" class="img-fluid rounded shadow" alt="Add Doctor">
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="col-md-7">
+            <div class="card p-4 shadow">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Doctor Name</label>
+                        <input type="text" name="name" required class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Contact Number</label>
+                        <input type="text" name="contact" required class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Specialization</label>
+                        <input type="text" name="special" required class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Experience (Years)</label>
+                        <input type="number" name="experience" class="form-control" min="0">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold">Available From</label>
+                            <input type="time" name="available_from" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold">Available To</label>
+                            <input type="time" name="available_to" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Consultation Fee</label>
+                        <input type="number" step="0.01" name="consultation_fee" class="form-control" min="0">
+                    </div>
+
+                    <div class="d-grid">
+                        <input type="submit" value="Submit" class="btn btn-primary">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if error == "no" %}
+<script>
+    alert("✅ Record Saved Successfully");
+    window.location = "{% url 'view_doctor' %}";
+</script>
+{% endif %}
+
+{% if error == "yes" %}
+<script>
+    alert("❌ Something went wrong. Try again");
+</script>
+{% endif %}
+
+{% endblock content %}
