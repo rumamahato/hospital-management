@@ -4,141 +4,179 @@
 {% block content %}
 <div class="container mt-4">
 
-    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:lightpink;background-color:grey; font-weight:bold;"scrollamount="10">
-        Welcome to Add Appointment
+    <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:lightpink;
+        background-color:grey; font-weight:bold;" scrollamount="10">
+        Appointment & Payment
     </marquee>
 
-    <div class="row mt-4 align-items-center">
+    <div class="row mt-4">
 
-        <!-- ========== LEFT SIDE IMAGE ========== -->
-        <div class="col-md-5 text-center">
-            <img src="{% static 'images/appointment.webp' %}"
-            class="img-fluid rounded shadow"alt="Appointment Image">
-        </div>
-
-        <!-- ========== RIGHT SIDE FORM ========== -->
-        <div class="col-md-7">
+        <!-- ================= LEFT : APPOINTMENT ================= -->
+        <div class="col-md-6">
             <div class="card shadow p-4">
+
+                <h4 class="text-center mb-3">🩺 Appointment Details</h4>
 
                 <form method="POST">
                     {% csrf_token %}
 
-                    <!-- ================= Patient ================= -->
+                    <!-- Patient -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Patient</label>
+                        <label class="fw-bold">Patient</label>
                         <select name="patient" id="patientSelect" class="form-control" required>
                             <option value="">-- Select Patient --</option>
                             {% for p in patients %}
-                                <option
-                                    value="{{ p.id }}"
-                                    data-phone="{{ p.phone }}"
-                                    data-gender="{{ p.gender }}"
-                                    data-dob="{{ p.DOB }}"
-                                    data-address="{{ p.address }}">
-                                    {{ p.name }}
-                                </option>
+                            <option value="{{ p.id }}"
+                                data-phone="{{ p.phone }}"
+                                data-gender="{{ p.gender }}"
+                                data-dob="{{ p.DOB }}"
+                                data-address="{{ p.address }}">
+                                {{ p.name }}
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <!-- Auto Filled Patient Info -->
+                    <!-- Auto Fill -->
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-2">
                             <label>Phone</label>
                             <input type="text" id="phone" class="form-control" readonly>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-2">
                             <label>Gender</label>
                             <input type="text" id="gender" class="form-control" readonly>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-2">
                             <label>DOB</label>
                             <input type="text" id="dob" class="form-control" readonly>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-2">
                             <label>Address</label>
                             <input type="text" id="address" class="form-control" readonly>
                         </div>
                     </div>
 
-                    <!-- ================= Doctor ================= -->
+                    <!-- Doctor -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Doctor</label>
+                        <label class="fw-bold">Doctor</label>
                         <select name="doctor" class="form-control" required>
                             <option value="">-- Select Doctor --</option>
                             {% for d in doctors %}
-                                <option value="{{ d.id }}">
-                                    Dr. {{ d.name }} ({{ d.specialization }})
-                                </option>
+                            <option value="{{ d.id }}">Dr. {{ d.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <!-- ================= Date & Time ================= -->
+                    <!-- Date & Time -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label>Appointment Date</label>
+                            <label>Date</label>
                             <input type="date" name="appointment_date" class="form-control" required>
                         </div>
-
                         <div class="col-md-6 mb-3">
-                            <label>Appointment Time</label>
+                            <label>Time</label>
                             <input type="time" name="appointment_time" class="form-control" required>
                         </div>
                     </div>
 
-                    <!-- ================= Status ================= -->
+                    <!-- ✅ AMOUNT (MOST IMPORTANT FIX) -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Status</label>
-                        <select name="status" class="form-control" required>
+                        <label class="fw-bold">Amount (Rs.)</label>
+                        <input type="number"
+                               name="total_amount"
+                               id="amountInput"
+                               class="form-control fw-bold text-success"
+                               value="{{ total_amount|default:100 }}"
+                               min="0"
+                               required>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-3">
+                        <label class="fw-bold">Status</label>
+                        <select name="status" class="form-control">
                             {% for value, display in status_choices %}
-                                <option value="{{ value }}"
-                                    {% if value == 'Pending' %}selected{% endif %}>
-                                    {{ display }}
-                                </option>
+                            <option value="{{ value }}">{{ display }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <!-- ================= Submit ================= -->
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
-                            Save Appointment
-                        </button>
-                    </div>
-
+                    <button type="submit" class="btn btn-primary w-100">
+                        Save Appointment
+                    </button>
                 </form>
+
+            </div>
+        </div>
+
+        <!-- ================= RIGHT : PAYMENT ================= -->
+        <div class="col-md-6">
+            <div class="card shadow p-4 text-center">
+
+                <img src="{% static 'images/esewa logo.jpg' %}" width="60" class="mb-3">
+
+                <h4 class="mb-3">
+                    Total Amount: <b>Rs.
+                        <span id="totalAmountText">{{ total_amount|default:100 }}</span>
+                    </b>
+                </h4>
+
+                <!-- eSewa FORM -->
+                <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+                    <input type="hidden" name="amount" id="esewaAmount" value="{{ total_amount|default:100 }}">
+                    <input type="hidden" name="tax_amount" value="0">
+                    <input type="hidden" name="total_amount" id="totalAmountInput" value="{{ total_amount|default:100 }}">
+                    <input type="hidden" name="transaction_uuid" value="{{ transaction_uuid }}">
+                    <input type="hidden" name="product_code" value="{{ product_code }}">
+                    <input type="hidden" name="product_service_charge" value="0">
+                    <input type="hidden" name="product_delivery_charge" value="0">
+                    <input type="hidden" name="success_url" value="{{ success_url }}">
+                    <input type="hidden" name="failure_url" value="{{ failure_url }}">
+                    <input type="hidden" name="signed_field_names" value="{{ signed_field_names }}">
+                    <input type="hidden" name="signature" value="{{ signature }}">
+
+                    <button type="submit" class="btn btn-success w-100 mt-3">
+                        Pay with eSewa
+                    </button>
+                </form>
+
+                <p class="mt-3 text-muted">
+                    * You will be redirected to eSewa to complete the payment.
+                </p>
+
             </div>
         </div>
 
     </div>
 </div>
 
-<!-- ================= JS ================= -->
+<!-- ================= JAVASCRIPT ================= -->
 <script>
+/* Patient auto fill */
 document.getElementById("patientSelect").addEventListener("change", function () {
     let opt = this.options[this.selectedIndex];
-    document.getElementById("phone").value = opt.dataset.phone || "";
-    document.getElementById("gender").value = opt.dataset.gender || "";
-    document.getElementById("dob").value = opt.dataset.dob || "";
-    document.getElementById("address").value = opt.dataset.address || "";
+    phone.value = opt.dataset.phone || "";
+    gender.value = opt.dataset.gender || "";
+    dob.value = opt.dataset.dob || "";
+    address.value = opt.dataset.address || "";
+});
+
+/* ✅ Amount Sync (Left → Right → eSewa) */
+const amountInput = document.getElementById("amountInput");
+const totalText = document.getElementById("totalAmountText");
+const totalInput = document.getElementById("totalAmountInput");
+const esewaAmount = document.getElementById("esewaAmount");
+
+amountInput.addEventListener("input", function () {
+    let val = this.value || 0;
+    totalText.innerText = val;
+    totalInput.value = val;
+    esewaAmount.value = val;
 });
 </script>
-
-{% if error == "no" %}
-<script>
-    alert("✅ Appointment Saved Successfully");
-    window.location.href = "{% url 'view_appointment' %}";
-</script>
-{% endif %}
-
-{% if error == "yes" %}
-<script>
-    alert("❌ Something went wrong. Please try again.");
-</script>
-{% endif %}
 
 {% endblock %}

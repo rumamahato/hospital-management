@@ -60,6 +60,9 @@ class Appointment(models.Model):
         default='Pending'
     )
 
+    # ✅ NEW: save the total amount entered in the form
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
     def __str__(self):
         return f"{self.patient_name} - {self.doctor_name}"
 
@@ -97,63 +100,44 @@ class Prescription(models.Model):
 # Payment
 # -------------------------
 class Payment(models.Model):
-    patient = models.CharField(max_length=150)
-    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    appointment = models.OneToOneField(
+        Appointment,
+        on_delete=models.CASCADE,
+        related_name="payment"
+    )
+
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+
     payment_method = models.CharField(
-        max_length=50,
+        max_length=20,
         choices=[
+            ('Cash', 'Cash'),
             ('Esewa', 'Esewa'),
             ('Khalti', 'Khalti'),
             ('Card', 'Card'),
-            ('Cash', 'Cash')
         ]
     )
-    is_paid = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length=100, blank=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pending', 'Pending'),
+            ('Paid', 'Paid'),
+        ],
+        default='Pending'
+    )
+
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
     paid_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.patient} - Rs.{self.amount}"
+        return f"{self.appointment.patient_name} - {self.status}"
 
-
-# -------------------------
-# Notification
-# -------------------------
 class Notification(models.Model):
-    name = models.CharField(max_length=150)
+    title = models.CharField(max_length=150)
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Notification for {self.user.username}"
-
-
-class Payment(models.Model):
-
-    PAYMENT_METHOD = (
-        ('Cash', 'Cash'),
-        ('Online', 'Online'),
-        ('Card', 'Card'),
-    )
-
-    PAYMENT_STATUS = (
-        ('Paid', 'Paid'),
-        ('Pending', 'Pending'),
-    )
-
-    medical_record = models.ForeignKey(
-        MedicalRecord,
-        on_delete=models.CASCADE,
-        related_name="payments"
-    )
-
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD)
-    status = models.CharField(max_length=20, choices=PAYMENT_STATUS)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.medical_record.patient.name} - Rs.{self.amount}"
+        return self.title

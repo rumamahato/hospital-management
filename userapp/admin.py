@@ -1,6 +1,4 @@
 from django.contrib import admin
-
-
 from .models import (
     Patient,
     Doctor,
@@ -18,7 +16,6 @@ class PatientAdmin(admin.ModelAdmin):
     search_fields = ('name', 'phone')
 
 
-
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
     list_display = ('name', 'specialization', 'experience', 'consultation_fee')
@@ -26,22 +23,17 @@ class DoctorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'specialization')
 
 
-
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ('patient_name', 'doctor_name', 'appointment_date', 'appointment_time', 'status')
+    list_display = (
+        'patient_name',
+        'doctor_name',
+        'appointment_date',
+        'appointment_time',
+        'status'
+    )
     list_filter = ('status', 'appointment_date')
-    search_fields = ('patient__name', 'doctor__name')  # Use __ to search related fields
-
-
-    # Methods to display names
-    def patient_name(self, obj):
-        return obj.patient.name
-    patient_name.short_description = 'Patient Name'
-
-    def doctor_name(self, obj):
-        return obj.doctor.name
-    doctor_name.short_description = 'Doctor Name'
+    search_fields = ('patient_name', 'doctor_name')
 
 
 @admin.register(MedicalRecord)
@@ -57,6 +49,17 @@ class PrescriptionAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('medical_record', 'amount', 'payment_method', 'status', 'created_at')
+    list_display = (
+        'appointment',
+        'amount',
+        'payment_method',
+        'status',
+        'paid_on'
+    )
     list_filter = ('payment_method', 'status')
 
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_read', 'created_at')
+    list_filter = ('is_read',)

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS=[
     'userapp',
+    'payments',
 ]
 INSTALLED_APPS.extend(EXTERNAL_APPS)
 

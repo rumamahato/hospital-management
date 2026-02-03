@@ -6,7 +6,7 @@
 
     <!-- HEADER -->
     <marquee style="font-family:'Monotype Corsiva'; font-size:25px; color:yellow; background-color:grey; font-weight:bold;" scrollamount="10">
-        🩺 Prescription & Payment Details
+        🩺 Prescription Details
     </marquee>
 
     <!-- ================= PATIENT INFO ================= -->
@@ -69,53 +69,6 @@
                 No medicines prescribed yet.
             </div>
             {% endif %}
-        </div>
-    </div>
-
-    <!-- ================= PAYMENT SECTION ================= -->
-    <div class="card mt-4 shadow">
-        <div class="card-body">
-            <h5 class="text-danger mb-3">💳 Payment Section</h5>
-
-            <form method="post">
-                {% csrf_token %}
-
-                <div class="row">
-
-                    <!-- Amount -->
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Total Amount (Rs.)</label>
-                        <input type="number" name="amount" class="form-control" placeholder="Enter amount" required>
-                    </div>
-
-                    <!-- Payment Method -->
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Payment Method</label>
-                        <select name="payment_method" class="form-control" required>
-                            <option value="">-- Select --</option>
-                            <option value="Cash">Cash</option>
-                            <option value="Online">Online</option>
-                            <option value="Card">Card</option>
-                        </select>
-                    </div>
-
-                    <!-- Payment Status -->
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Payment Status</label>
-                        <select name="status" class="form-control" required>
-                            <option value="Paid">Paid</option>
-                            <option value="Pending">Pending</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-success px-4">
-                        ✅ Confirm Payment
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 

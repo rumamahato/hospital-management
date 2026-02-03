@@ -19,6 +19,9 @@
     <th>SN</th>
     <th>Name</th>
     <th>Phone</th>
+    <th>Gender</th>
+    <th>DOB</th>
+    <th>Address</th>
     <th>Action</th>
 </tr>
 </thead>
@@ -26,9 +29,12 @@
 <tbody>
 {% for p in patients %}
 <tr>
-    <td>{{ p.id }}</td>
+    <td>{{ forloop.counter }}</td>
     <td>{{ p.name }}</td>
     <td>{{ p.phone }}</td>
+    <td>{{ p.gender }}</td>
+    <td>{{ p.DOB }}</td>
+    <td>{{ p.address }}</td>
     <td>
         <a href="{% url 'restore_patient' p.id %}"
            class="btn btn-success btn-sm"
@@ -44,7 +50,9 @@
     </td>
 </tr>
 {% empty %}
-<tr><td colspan="4">Recycle Bin Empty</td></tr>
+<tr>
+    <td colspan="7">Recycle Bin Empty</td>
+</tr>
 {% endfor %}
 </tbody>
 </table>

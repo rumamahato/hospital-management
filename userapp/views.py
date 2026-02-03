@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from .models import Doctor, Patient, Appointment, MedicalRecord, Prescription
+import uuid, hmac, hashlib, base64
+from django.urls import reverse
+
 
 # ---------------- Home & Auth ----------------
 def about(request):
@@ -693,36 +696,75 @@ def add_appointment(request):
     if not request.user.is_staff:
         return redirect('login')
 
-    patients = Patient.objects.all()
-    doctors = Doctor.objects.all()
-    status_choices = Appointment._meta.get_field('status').choices  # 🔹 dynamically get choices
+    patients = Patient.objects.filter(is_deleted=False)
+    doctors = Doctor.objects.filter(is_deleted=False)
+    status_choices = Appointment._meta.get_field('status').choices
     error = None
+
+    # 🔹 Default values (GET request)
+    total_amount = 100
+    tax_amount = 0
 
     if request.method == "POST":
         try:
-            patient = Patient.objects.get(id=request.POST['patient'])
-            doctor = Doctor.objects.get(id=request.POST['doctor'])
-            Appointment.objects.create(
+            patient = Patient.objects.get(id=request.POST.get("patient"))
+            doctor = Doctor.objects.get(id=request.POST.get("doctor"))
+
+            # ✅ USER ENTERED AMOUNT
+            total_amount = int(request.POST.get("total_amount", 0))
+
+            appointment = Appointment.objects.create(
                 patient_name=patient.name,
                 phone=patient.phone,
                 gender=patient.gender,
                 dob=patient.DOB,
                 address=patient.address,
                 doctor_name=doctor.name,
-                appointment_date=request.POST['appointment_date'],
-                appointment_time=request.POST['appointment_time'],
-                status=request.POST['status']
+                appointment_date=request.POST.get("appointment_date"),
+                appointment_time=request.POST.get("appointment_time"),
+                status=request.POST.get("status"),
+                total_amount=total_amount   # ⭐ IMPORTANT
             )
+
+            # payment success पछि status update गर्न
+            request.session['appointment_id'] = appointment.id
+
             error = "no"
+
         except Exception as e:
             print(e)
             error = "yes"
+
+    # ================= eSewa CONFIG =================
+    transaction_uuid = str(uuid.uuid4())
+    product_code = "EPAYTEST"
+    signed_field_names = "total_amount,transaction_uuid,product_code"
+
+    message = f"total_amount={total_amount},transaction_uuid={transaction_uuid},product_code={product_code}"
+    secret_key = "8gBm/:&EnhH.1/q"
+
+    signature = base64.b64encode(
+        hmac.new(secret_key.encode(), message.encode(), hashlib.sha256).digest()
+    ).decode()
+
+    success_url = request.build_absolute_uri(reverse("success_esewa"))
+    failure_url = request.build_absolute_uri(reverse("failure_esewa"))
 
     return render(request, "add_appointment.html", {
         "patients": patients,
         "doctors": doctors,
         "status_choices": status_choices,
-        "error": error
+        "error": error,
+
+        # ✅ eSewa dynamic values
+        "tax_amount": tax_amount,
+        "total_amount": total_amount,
+        "transaction_uuid": transaction_uuid,
+        "product_code": product_code,
+        "signed_field_names": signed_field_names,
+        "signature": signature,
+        "success_url": success_url,
+        "failure_url": failure_url,
     })
 
 
@@ -804,10 +846,10 @@ def restore_appointment(request, pid):
     return redirect('recycle_appointment_view')
 
 
-def delete_appointment_permanent(request, id):
-    appointment = Appointment.objects.get(id=id)
+def delete_appointment_permanent(request, pid):
+    appointment = get_object_or_404(Appointment, id=pid)
     appointment.delete()
-    return redirect('recycle_bin_appointment')
+    return redirect('recycle_appointment_view')
 
 def recycle_appointment_view(request):
     if not request.user.is_staff:
@@ -891,7 +933,7 @@ def add_prescription(request):
                 duration=request.POST.get("duration"),
                 instructions=request.POST.get("instructions")
             )
-            return redirect('view_mrdical_record', id=record.id)
+            return redirect('view_medical_record', id=record.id)
         except Exception as e:
             print(e)
             error = "yes"
@@ -909,3 +951,16 @@ def view_prescription(request, id):
     })
 
 
+def payment_success(request):
+    appointment_id = request.session.get('appointment_id')
+
+    if appointment_id:
+        appointment = Appointment.objects.get(id=appointment_id)
+        appointment.status = "Confirmed"
+        appointment.save()
+        del request.session['appointment_id']
+
+    return render(request, "payment_success.html")
+
+def payment_failure(request):
+    return render(request, "payment_failure.html")
