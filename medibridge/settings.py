@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -129,3 +130,19 @@ MEDIA_URL='/media/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#django jazzmin
+JAZZMIN_SETTINGS = {
+    "welcome_sign": "Welcome to the My Hospital",
+    "login_logo": "images\images (10).jpeg",
+    "custom_css": "css/admin.css",
+    "site_title": "Myshop Admin",
+    "copyright": "Ruma Mahato",
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "shopapp.product": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+    "show_ui_builder": True,
+}
